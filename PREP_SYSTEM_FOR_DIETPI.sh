@@ -911,7 +911,7 @@ Currently installed: $G_DISTRO_NAME (ID: $G_DISTRO)"; then
 		# - initscripts: Pre-installed on Jessie systems (?), superseded and masked by systemd, but never autoremoved
 		G_AGP dbus dhcpcd5 mountall initscripts '*office*' '*xfce*' '*qt5*' '*xserver*' '*xorg*' glib-networking libgtk-3-0
 		# Remove any autoremove prevention
-		rm -fv /etc/apt/apt.conf.d/*autoremove*
+		#rm -fv /etc/apt/apt.conf.d/*autoremove*
 		G_AGA
 
 		#------------------------------------------------------------------------------------------------
@@ -971,33 +971,33 @@ Currently installed: $G_DISTRO_NAME (ID: $G_DISTRO)"; then
 
 		G_DIETPI-NOTIFY 2 'Removing misc files/folders/services, not required by DietPi'
 
-		[[ -d '/selinux' ]] && rm -Rv /selinux
-		[[ -d '/var/cache/apparmor' ]] && rm -Rv /var/cache/apparmor
-		rm -Rfv /var/lib/dhcp/{,.??,.[^.]}*
-		rm -Rfv /var/backups/{,.??,.[^.]}*
+		#[[ -d '/selinux' ]] && rm -Rv /selinux
+		#[[ -d '/var/cache/apparmor' ]] && rm -Rv /var/cache/apparmor
+		#rm -Rfv /var/lib/dhcp/{,.??,.[^.]}*
+		#rm -Rfv /var/backups/{,.??,.[^.]}*
 
 		# - www
-		[[ -d '/var/www' ]] && rm -vRf /var/www/{,.??,.[^.]}*
+		#[[ -d '/var/www' ]] && rm -vRf /var/www/{,.??,.[^.]}*
 
 		# - Sourcecode (linux-headers etc)
-		[[ -d '/usr/src' ]] && rm -vRf /usr/src/{,.??,.[^.]}*
+		#[[ -d '/usr/src' ]] && rm -vRf /usr/src/{,.??,.[^.]}*
 
 		# - Documentation dirs: https://github.com/MichaIng/DietPi/issues/3259
 		#[[ -d '/usr/share/man' ]] && rm -vR /usr/share/man
 		#[[ -d '/usr/share/doc' ]] && rm -vR /usr/share/doc
 		#[[ -d '/usr/share/doc-base' ]] && rm -vR /usr/share/doc-base
-		[[ -d '/usr/share/calendar' ]] && rm -vR /usr/share/calendar
+		#[[ -d '/usr/share/calendar' ]] && rm -vR /usr/share/calendar
 
 		# - Previous debconfs
-		rm -fv /var/cache/debconf/*-old
-		rm -fv /var/lib/dpkg/*-old
+		#rm -fv /var/cache/debconf/*-old
+		#rm -fv /var/lib/dpkg/*-old
 
 		# - Unused DEB package config files
-		find /etc \( -name '?*\.dpkg-dist' -o -name '?*\.dpkg-old' -o -name '?*\.dpkg-new' \) -exec rm -v {} +
+		#find /etc \( -name '?*\.dpkg-dist' -o -name '?*\.dpkg-old' -o -name '?*\.dpkg-new' \) -exec rm -v {} +
 
 		# - Fonts
-		[[ -d '/usr/share/fonts' ]] && rm -vR /usr/share/fonts
-		[[ -d '/usr/share/icons' ]] && rm -vR /usr/share/icons
+		#[[ -d '/usr/share/fonts' ]] && rm -vR /usr/share/fonts
+		#[[ -d '/usr/share/icons' ]] && rm -vR /usr/share/icons
 
 		# - Stop, disable and remove not required 3rd party services
 		local aservices=(
@@ -1020,48 +1020,48 @@ Currently installed: $G_DISTRO_NAME (ID: $G_DISTRO)"; then
 
 		)
 
-		for i in "${aservices[@]}"
-		do
+		#for i in "${aservices[@]}"
+		#doq
 			# Loop through known service locations
-			for j in /etc/init.d/$i /{etc,lib,usr/lib,usr/local/lib}/systemd/system/{$i.service{,.d},*.wants/$i.service}
-			do
-				[[ -e $j || -L $j ]] || continue
-				[[ -f $j ]] && systemctl disable --now "${j##*/}"
+		#	for j in /etc/init.d/$i /{etc,lib,usr/lib,usr/local/lib}/systemd/system/{$i.service{,.d},*.wants/$i.service}
+		#	do
+		#		[[ -e $j || -L $j ]] || continue
+		#		[[ -f $j ]] && systemctl disable --now "${j##*/}"
 				# Remove if not attached to any DEB package, else mask
-				if dpkg -S "$j" &> /dev/null; then
+		#		if dpkg -S "$j" &> /dev/null; then
 
-					systemctl mask "${j##*/}"
+		#			systemctl mask "${j##*/}"
 
-				else
+		#		else
 					rm -Rv "$j"
 
-				fi
-			done
-		done
+		#		fi
+		#	done
+		#done
 
 		# - Remove obsolete SysV service entries
-		aservices=(
+		#aservices=(
 
-			fake-hwclock
-			haveged
-			hwclock.sh
-			networking
-			udev
-			cron
-			console-setup.sh
-			sudo
-			cpu_governor
-			keyboard-setup.sh
-			kmod
-			procps
+		#	fake-hwclock
+		#	haveged
+		#	hwclock.sh
+		#	networking
+		#	udev
+		#	cron
+		#	console-setup.sh
+		#	sudo
+		#	cpu_governor
+		#	keyboard-setup.sh
+		#	kmod
+		#	procps
 
-		)
+		#)
 
-		for i in "${aservices[@]}"
-		do
-			G_EXEC update-rc.d -f "$i" remove
-		done
-		unset -v aservices
+		#for i in "${aservices[@]}"
+		#do
+		#	G_EXEC update-rc.d -f "$i" remove
+		#done
+		#unset -v aservices
 
 		# - Armbian specific
 		[[ -f '/boot/armbian_first_run.txt.template' ]] && rm -v /boot/armbian_first_run.txt.template
@@ -1098,8 +1098,8 @@ path-exclude /etc/profile.d/*armbian*
 #path-exclude /usr/share/armbian # Required for Armbian root package upgrade
 _EOF_
 		# Armbian auto-login
-		[[ -d '/etc/systemd/system/getty@.service.d' ]] && rm -Rv /etc/systemd/system/getty@.service.d
-		[[ -d '/etc/systemd/system/serial-getty@.service.d' ]] && rm -Rv /etc/systemd/system/serial-getty@.service.d
+		#[[ -d '/etc/systemd/system/getty@.service.d' ]] && rm -Rv /etc/systemd/system/getty@.service.d
+		#[[ -d '/etc/systemd/system/serial-getty@.service.d' ]] && rm -Rv /etc/systemd/system/serial-getty@.service.d
 
 		# - OMV: https://github.com/MichaIng/DietPi/issues/2994
 		[[ -d '/etc/openmediavault' ]] && rm -vR /etc/openmediavault
@@ -1111,22 +1111,22 @@ _EOF_
 		rm -fv /installed-packages*.txt
 
 		# - RPi specific: https://github.com/MichaIng/DietPi/issues/1631#issuecomment-373965406
-		[[ -f '/etc/profile.d/wifi-country.sh' ]] && rm -v /etc/profile.d/wifi-country.sh
-		[[ -f '/etc/sudoers.d/010_pi-nopasswd' ]] && rm -v /etc/sudoers.d/010_pi-nopasswd
-		[[ -d '/etc/systemd/system/dhcpcd.service.d' ]] && rm -vR /etc/systemd/system/dhcpcd.service.d # https://github.com/RPi-Distro/pi-gen/blob/master/stage3/01-tweaks/00-run.sh
+		#[[ -f '/etc/profile.d/wifi-country.sh' ]] && rm -v /etc/profile.d/wifi-country.sh
+		#[[ -f '/etc/sudoers.d/010_pi-nopasswd' ]] && rm -v /etc/sudoers.d/010_pi-nopasswd
+		#[[ -d '/etc/systemd/system/dhcpcd.service.d' ]] && rm -vR /etc/systemd/system/dhcpcd.service.d # https://github.com/RPi-Distro/pi-gen/blob/master/stage3/01-tweaks/00-run.sh
 		#	Do not ship rc.local anymore. On DietPi /var/lib/dietpi/postboot.d should be used.
 		#	WIP: Mask rc-local.service and create symlink postboot.d/rc.local => /etc/rc.local for backwards compatibility?
-		[[ -f '/etc/rc.local' ]] && rm -v /etc/rc.local # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/files/rc.local
-		[[ -d '/etc/systemd/system/rc-local.service.d' ]] && rm -Rv /etc/systemd/system/rc-local.service.d # Raspberry Pi OS
-		[[ -d '/etc/systemd/system/rc.local.service.d' ]] && rm -Rv /etc/systemd/system/rc.local.service.d
+		#[[ -f '/etc/rc.local' ]] && rm -v /etc/rc.local # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/files/rc.local
+		#[[ -d '/etc/systemd/system/rc-local.service.d' ]] && rm -Rv /etc/systemd/system/rc-local.service.d # Raspberry Pi OS
+		#[[ -d '/etc/systemd/system/rc.local.service.d' ]] && rm -Rv /etc/systemd/system/rc.local.service.d
 		#	Below required if DietPi-PREP is executed from chroot/container, so RPi firstrun scripts are not executed
-		[[ -f '/etc/init.d/resize2fs_once' ]] && rm -v /etc/init.d/resize2fs_once # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/files/resize2fs_once
-		[[ -f '/boot/cmdline.txt' ]] && sed -i 's| init=/usr/lib/raspi-config/init_resize\.sh||' /boot/cmdline.txt # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/00-patches/07-resize-init.diff
+		#[[ -f '/etc/init.d/resize2fs_once' ]] && rm -v /etc/init.d/resize2fs_once # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/files/resize2fs_once
+		#[[ -f '/boot/cmdline.txt' ]] && sed -i 's| init=/usr/lib/raspi-config/init_resize\.sh||' /boot/cmdline.txt # https://github.com/RPi-Distro/pi-gen/blob/master/stage2/01-sys-tweaks/00-patches/07-resize-init.diff
 		# - Remove all autologin configs for all TTYs: https://github.com/MichaIng/DietPi/issues/3570#issuecomment-648988475, https://github.com/MichaIng/DietPi/issues/3628#issuecomment-653693758
-		rm -fv /etc/systemd/system/*getty@*.service.d/*autologin*.conf
+		#rm -fv /etc/systemd/system/*getty@*.service.d/*autologin*.conf
 
 		# - make_nas_processes_faster cron job on ROCK64 + NanoPi + PINE A64(?) images
-		[[ -f '/etc/cron.d/make_nas_processes_faster' ]] && rm -v /etc/cron.d/make_nas_processes_faster
+		#[[ -f '/etc/cron.d/make_nas_processes_faster' ]] && rm -v /etc/cron.d/make_nas_processes_faster
 
 		#-----------------------------------------------------------------------------------
 		G_DIETPI-NOTIFY 2 'Restoring default base files:'
@@ -1209,15 +1209,15 @@ MAILTO=""
 _EOF_'
 		#-----------------------------------------------------------------------------------
 		# Network
-		G_DIETPI-NOTIFY 2 'Removing all rfkill soft blocks and the rfkill package'
-		rfkill unblock all
-		G_AGP rfkill
-		G_AGA
-		[[ -d '/var/lib/systemd/rfkill' ]] && rm -Rv /var/lib/systemd/rfkill
+		#G_DIETPI-NOTIFY 2 'Removing all rfkill soft blocks and the rfkill package'
+		#rfkill unblock all
+		#G_AGP rfkill
+		#G_AGA
+		#[[ -d '/var/lib/systemd/rfkill' ]] && rm -Rv /var/lib/systemd/rfkill
 
-		G_DIETPI-NOTIFY 2 'Configuring wlan/eth naming to be preferred for networked devices:'
-		ln -sfv /dev/null /etc/systemd/network/99-default.link
-		ln -sfv /dev/null /etc/udev/rules.d/80-net-setup-link.rules
+		#G_DIE*TPI-NOTIFY 2 'Configuring wlan/eth naming to be preferred for networked devices:'
+		#ln -sfv /dev/null /etc/systemd/network/99-default.link
+		#ln -sfv /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 		# - RPi: Add cmdline entry, which was required on my Raspbian Bullseye system since last few APT updates
 		if [[ -f '/boot/cmdline.txt' ]]; then
 
@@ -1227,43 +1227,43 @@ _EOF_'
 		fi
 		[[ -f '/etc/udev/rules.d/70-persistent-net.rules' ]] && rm -v /etc/udev/rules.d/70-persistent-net.rules # Jessie pre-image
 
-		G_DIETPI-NOTIFY 2 'Configuring DNS nameserver:'
+		#G_DIETPI-NOTIFY 2 'Configuring DNS nameserver:'
 		# Failsafe: Assure that /etc/resolv.conf is not a symlink and disable systemd-resolved + systemd-networkd
-		systemctl disable --now systemd-{resolve,network}d
-		rm -fv /etc/resolv.conf
-		echo 'nameserver 9.9.9.9' > /etc/resolv.conf # Apply generic functional DNS nameserver, updated on next service start
+		#systemctl disable --now systemd-{resolve,network}d
+		#rm -fv /etc/resolv.conf
+		#echo 'nameserver 9.9.9.9' > /etc/resolv.conf # Apply generic functional DNS nameserver, updated on next service start
 
 		# ifupdown starts the daemon outside of systemd, the enabled systemd unit just thows an error on boot due to missing dbus and with dbus might interfere with ifupdown
-		systemctl disable wpa_supplicant 2> /dev/null && G_DIETPI-NOTIFY 2 'Disabled non-required wpa_supplicant systemd unit'
+		#systemctl disable wpa_supplicant 2> /dev/null && G_DIETPI-NOTIFY 2 'Disabled non-required wpa_supplicant systemd unit'
 
-		[[ -L '/etc/network/interfaces' ]] && rm -v /etc/network/interfaces # Armbian symlink for bulky network-manager
-		G_EXEC_DESC='Configuring network interfaces'
-		G_EXEC eval 'cat << _EOF_ > /etc/network/interfaces
+		#[[ -L '/etc/network/interfaces' ]] && rm -v /etc/network/interfaces # Armbian symlink for bulky network-manager
+		#G_EXEC_DESC='Configuring network interfaces'
+		#G_EXEC eval 'cat << _EOF_ > /etc/network/interfaces
 # Location: /etc/network/interfaces
 # Please modify network settings via: dietpi-config
 # Or create your own drop-ins in: /etc/network/interfaces.d/
 
 # Drop-in configs
-source interfaces.d/*
+#source interfaces.d/*
 
 # Ethernet
 #allow-hotplug eth0
-iface eth0 inet dhcp
-address 192.168.0.100
-netmask 255.255.255.0
-gateway 192.168.0.1
+#iface eth0 inet dhcp
+#address 192.168.0.100
+#netmask 255.255.255.0
+#gateway 192.168.0.1
 #dns-nameservers 9.9.9.9 149.112.112.112
 
 # WiFi
 #allow-hotplug wlan0
-iface wlan0 inet dhcp
-address 192.168.0.100
-netmask 255.255.255.0
-gateway 192.168.0.1
+#iface wlan0 inet dhcp
+#address 192.168.0.100
+#netmask 255.255.255.0
+#gateway 192.168.0.1
 #dns-nameservers 9.9.9.9 149.112.112.112
-wireless-power off
-wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-_EOF_'
+#wireless-power off
+#wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+#_EOF_'
 		# Prefer IPv4 by default
 		/boot/dietpi/func/dietpi-set_hardware preferipv4 enable
 
@@ -1376,11 +1376,11 @@ _EOF_'
 
 		fi
 
-		G_DIETPI-NOTIFY 2 'Disabling static and automatic login prompts on consoles tty2 to tty6:'
-		G_EXEC systemctl mask --now getty-static
+		#G_DIETPI-NOTIFY 2 'Disabling static and automatic login prompts on consoles tty2 to tty6:'
+		#G_EXEC systemctl mask --now getty-static
 		# - logind features are usually not needed and (aside of automatic getty spawn) require the libpam-systemd package.
 		# - It will be unmasked automatically if libpam-systemd got installed during dietpi-software install, e.g. with desktops.
-		G_EXEC systemctl mask --now systemd-logind
+		#G_EXEC systemctl mask --now systemd-logind
 
 		G_DIETPI-NOTIFY 2 'Configuring locales:'
 		/boot/dietpi/func/dietpi-set_software locale 'C.UTF-8'
@@ -1390,9 +1390,9 @@ _EOF_'
 		ln -sv /usr/share/zoneinfo/UTC /etc/localtime
 		G_EXEC dpkg-reconfigure -f noninteractive tzdata
 
-		G_DIETPI-NOTIFY 2 'Configuring keyboard:'
-		echo -e 'XKBMODEL="pc105"\nXKBLAYOUT="gb"' > /etc/default/keyboard
-		dpkg-reconfigure -f noninteractive keyboard-configuration # Keyboard must be plugged in for this to work!
+		#G_DIETPI-NOTIFY 2 'Configuring keyboard:'
+		#echo -e 'XKBMODEL="pc105"\nXKBLAYOUT="gb"' > /etc/default/keyboard
+		#dpkg-reconfigure -f noninteractive keyboard-configuration # Keyboard must be plugged in for this to work!
 
 		G_DIETPI-NOTIFY 2 'Configuring console:' # This can be wrong, e.g. when selecting a non-UTF-8 locale during Debian installer
 		G_CONFIG_INJECT 'CHARMAP=' 'CHARMAP="UTF-8"' /etc/default/console-setup
@@ -1468,60 +1468,60 @@ bootargs=earlyprintk clk_ignore_unused selinux=0 scandelay console=tty0 loglevel
 _EOF_
 
 			# Blacklist GPU and touch screen modules: https://github.com/MichaIng/DietPi/issues/699#issuecomment-271362441
-			cat << _EOF_ > /etc/modprobe.d/dietpi-disable_sparkysbc_touchscreen.conf
-blacklist owl_camera
-blacklist gsensor_stk8313
-blacklist ctp_ft5x06
-blacklist ctp_gsl3680
-blacklist gsensor_bma222
-blacklist gsensor_mir3da
-_EOF_
+			#cat << _EOF_ > /etc/modprobe.d/dietpi-disable_sparkysbc_touchscreen.conf
+#blacklist owl_camera
+#blacklist gsensor_stk8313
+#blacklist ctp_ft5x06
+#blacklist ctp_gsl3680
+#blacklist gsensor_bma222
+#blacklist gsensor_mir3da
+#_EOF_
 
-			cat << _EOF_ > /etc/modprobe.d/dietpi-disable_sparkysbc_gpu.conf
-blacklist pvrsrvkm
-blacklist drm
-blacklist videobuf2_vmalloc
-blacklist bc_example
-_EOF_
+#			cat << _EOF_ > /etc/modprobe.d/dietpi-disable_sparkysbc_gpu.conf
+#blacklist pvrsrvkm
+#blacklist drm
+#blacklist videobuf2_vmalloc
+#blacklist bc_example
+#_EOF_
 
 			# Use performance gov for stability
 			G_CONFIG_INJECT 'CONFIG_CPU_GOVERNOR=' 'CONFIG_CPU_GOVERNOR=performance' /boot/dietpi.txt
 
 			# Install script to toggle between USB and onboard Ethernet automatically
-			cat << _EOF_ > /var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
+			#cat << _EOF_ > /var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
 #!/bin/dash
 # Called from: /etc/systemd/system/dietpi-sparkysbc_ethernet.service
 # We need to wait until USB Ethernet is established on USB bus, which takes much longer than onboard init.
-sleep 20
+#sleep 20
 # Disable onboard Ethernet if USB Ethernet is found
-if ip a s eth1 > /dev/null 2>&1; then
+#if ip a s eth1 > /dev/null 2>&1; then
 
-	echo 'blacklist ethernet' > /etc/modprobe.d/dietpi-disable_sparkysbc_ethernet.conf
-	reboot
+#	echo 'blacklist ethernet' > /etc/modprobe.d/dietpi-disable_sparkysbc_ethernet.conf
+#	reboot
 
 # Enable onboard Ethernet if no adapter is found
-elif ! ip a s eth0 > /dev/null 2>&1; then
+#elif ! ip a s eth0 > /dev/null 2>&1; then
 
-	rm -f /etc/modprobe.d/dietpi-disable_sparkysbc_ethernet.conf
-	reboot
+#	rm -f /etc/modprobe.d/dietpi-disable_sparkysbc_ethernet.conf
+#	reboot
 
-fi
-_EOF_
-			chmod +x /var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
-			cat << _EOF_ > /etc/systemd/system/dietpi-sparkysbc_ethernet.service
-[Unit]
-Description=Sparky SBC auto detect and toggle onboard/USB Ethernet
-Wants=network-online.target
-After=network-online.target
+#fi
+#_EOF_
+#			chmod +x /var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
+#			cat << _EOF_ > /etc/systemd/system/dietpi-sparkysbc_ethernet.service
+#[Unit]
+#Description=Sparky SBC auto detect and toggle onboard/USB Ethernet
+#Wants=network-online.target
+#After=network-online.target
 
-[Service]
-RemainAfterExit=yes
-ExecStart=/var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
+#[Service]
+#RemainAfterExit=yes
+#ExecStart=/var/lib/dietpi/services/dietpi-sparkysbc_ethernet.sh
 
-[Install]
-WantedBy=multi-user.target
-_EOF_
-			systemctl enable dietpi-sparkysbc_ethernet
+#[Install]
+#WantedBy=multi-user.target
+#_EOF_
+#			systemctl enable dietpi-sparkysbc_ethernet
 
 		# - RPi
 		elif (( $G_HW_MODEL < 10 )); then
@@ -1686,8 +1686,8 @@ _EOF_
 
 		fi
 
-		G_DIETPI-NOTIFY 2 'Disabling soundcards by default'
-		/boot/dietpi/func/dietpi-set_hardware soundcard none
+		#G_DIETPI-NOTIFY 2 'Disabling soundcards by default'
+		#/boot/dietpi/func/dietpi-set_hardware soundcard none
 
 		G_DIETPI-NOTIFY 2 'Setting default CPU gov'
 		/boot/dietpi/func/dietpi-set_cpu
@@ -1749,7 +1749,7 @@ _EOF_
 		rm -Rfv /{root,home/*}/.{bash_history,nano_history,wget-hsts,cache,local,config,gnupg,viminfo,dbus,gconf,nano,vim,zshrc,oh-my-zsh}
 
 		# Remove PREP script
-		[[ -f $FP_PREP_SCRIPT ]] && rm -v "$FP_PREP_SCRIPT"
+		#[[ -f $FP_PREP_SCRIPT ]] && rm -v "$FP_PREP_SCRIPT"
 
 		sync
 
